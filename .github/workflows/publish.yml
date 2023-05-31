@@ -23,14 +23,10 @@ jobs:
           cache: 'gradle'
       - name: Build jar
         run: ./gradlew shadowJar
-      - name: Rename artifacts
-        run: |
-          mv build/libs/GadgetProbe-1.0-SNAPSHOT-all.jar target/GadgetProbe.jar
-
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            target/GadgetProbe.jar
+            build/libs/GadgetProbe-1.1-SNAPSHOT-all.jar
