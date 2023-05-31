@@ -1,0 +1,36 @@
+name: publish jar
+
+on:
+  push:
+    tags:
+      - "v*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: 'maven'
+      - name: Build jar
+        run: ./gradlew shadowJar
+      - name: Rename artifacts
+        run: |
+          mv build/libs/GadgetProbe-1.0-SNAPSHOT-all.jar target/GadgetProbe.jar
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            target/GadgetProbe.jar
