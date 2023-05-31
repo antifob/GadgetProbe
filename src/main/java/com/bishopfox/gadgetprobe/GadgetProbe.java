@@ -83,7 +83,24 @@ public class GadgetProbe {
         }
         return hm;
     }
-    public static void main(String[] args) {
-        System.out.println(Analyzer.getWordlist());
+
+    public static void main(String[] args) throws Exception {
+        if (2 != args.length) {
+            System.err.println("usage: GadgetProbe.jar domain classname");
+            System.exit(1);
+        }
+
+        GadgetProbe gp = new GadgetProbe(args[0]);
+        Object obj = gp.getObject(args[1]);
+
+
+        // serialize
+        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+        java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(bos);
+        oos.writeObject(obj);
+        oos.flush();
+        oos.close();
+        System.out.println(java.util.Base64.getEncoder().encodeToString(bos.toByteArray()));
+        bos.close();
     }
 }
